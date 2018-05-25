@@ -1,0 +1,24 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">
+<title>Happy Birthday!</title><!-- おめでとうございます＼(^o^)／ -->
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=0">
+<style>*{margin:0;padding:0}canvas{position:fixed;top:0;left:0}
+body{overflow:hidden;-moz-user-select:none;-khtml-user-select:none;user-select:none;}
+</style></head><body><script>!function(){let t,e,n=Math,i=document,
+r=window,o=i.body.appendChild(i.createElement("canvas")),d=
+o.getContext("2d");o.addEventListener("click",function(t){h(t.clientX,
+t.clientY,20)},!1);let l=function(){t=r.innerWidth?r.innerWidth:
+i.body.clientWidth,e=r.innerHeight?r.innerHeight:i.body.clientHeight,
+o.width=t,o.height=e,d.lineWidth=4};r.addEventListener("resize",l,!1),l();
+let c=[],a=function(){return~~(255*n.random())},h=function(t,e){var i,r,o;
+c[c.length]={F:0,C:function(){for(var t,e=[a(),a(),a()];t=(t=n.max(
+e[0],e[1],e[2]))-n.min(e[0],e[1],e[2])/t&&!(200<t&&t<250);)e=[a(),a(),a()];
+for(var i="#",r=0;r<3;r++)i+=("0"+e[r].toString(16)).slice(-2);return i}(),
+Q:o=[]};for(i=0;i<20;)r=6.294*n.random(),4,o[i++]={dx:4*n.sin(r)*.7,
+dy:4*n.cos(r)*.7,x:t,y:e};c.length>6&&c.shift()};setInterval(function(){
+h(50+~~(n.random()*(t-100)),50+~~(n.random()*e/2))},500);let f=function(t){
+return 1-n.pow(1-t,4)},s=0,u=function(){if(requestAnimationFrame(u),
+s=0===s?1:0){d.clearRect(0,0,o.width,o.height);for(let e=c.length;e--;){
+let i=c[e];d.strokeStyle=i.C,d.beginPath(),i.F++;let r=30*(t=i.F/30,
+n.sin(t*n.PI/2)),o=30*f(i.F/30);for(let t=i.Q.length;t--;){let e=i.Q[t];
+d.moveTo(e.x+e.dx*r,e.y+e.dy*r),d.lineTo(e.x+e.dx*o,e.y+e.dy*o)}c[e].F>30&&
+c.splice(e,1),d.stroke()}}var t};u()}();</script></body></html>
