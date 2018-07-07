@@ -1,0 +1,20 @@
+{
+  "version": 2,
+  "name": "m98-contributions",
+  "alias": "m98-contributions",
+  "builds": [{ "src": "*.js", "use": "@now/node" }],
+  "routes": [
+    {
+      "src": "/",
+      "dest": "index.js",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET",
+        "Access-Control-Allow-Headers": "Origin, Accept, Content-Type",
+        "Access-Control-Max-Age": "21600",
+        "Content-Type": "application/json; charset=utf-8",
+        "Cache-Control": "public, max-age=21600, s-maxage=21600"
+      }
+    }
+  ]
+}

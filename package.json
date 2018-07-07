@@ -1,0 +1,22 @@
+{
+  "name": "m98-contributions",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mochiya98/mochiya98.github.io.git"
+  },
+  "keywords": [],
+  "author": "Yukimasa Funaoka <yukimasafunaoka@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mochiya98/mochiya98.github.io/issues"
+  },
+  "homepage": "https://github.com/mochiya98/mochiya98.github.io#readme"
+}
