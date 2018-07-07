@@ -1,0 +1,25 @@
+*{margin:0;padding:0;}
+html,body,#container{height:100%;}
+body{color:#777;line-height:1.5;font-family:"Hind Guntur",sans-serif;}
+h2{font-size:30px;font-weight:normal;}
+#forest-view{position:relative;top:0;left:0;padding-bottom:43.75%;}
+#forest-view canvas{position:absolute;top:0;left:0;border:0px solid #000;}
+#forest-view:before{content:"loading...";display:block;position:absolute;top:50%;left:0;transform:translateY(-50%);width:100%;text-align:center;font-size:25px;color:#aaa}
+#forest-view__contributions{position:absolute;top:0;left:0;padding-top:10px;width:100%;text-align:center;font-size:25px;display:none;z-index:2;}
+
+#forest-view{font-family:"Share Tech Mono";}
+
+#forest-view.loaded:before{display:none;}
+#forest-view.loaded #forest-view__contributions{display:block;}
+a{color:inherit;}
+a:hover{color:#0bb;}
+#profile{text-align:center;}
+#container{max-width:820px;box-sizing:border-box;margin:0 auto;padding-top:30px;}
+.wf-loading #container>*{visibility:hidden;}
+@media screen and (max-width: 700px) {
+  #container{padding-top:4vw;}
+  #forest-view__contributions{padding-top:1.9vw;}
+  #forest-view:before,#forest-view__contributions {
+    font-size:3.6vw;
+  }
+}
