@@ -47,8 +47,16 @@ module.exports = {
   },
   output: {
     path: __dirname + "/dist",
+    chunkFilename: "js/chunks/[name].js",
     publicPath: "./",
     filename: "js/app.js"
+  },
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        vendors: false
+      }
+    }
   },
   devServer: {
     contentBase: "./dist",
