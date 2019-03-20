@@ -1,17 +1,15 @@
 /*! ContributeForest v0.0.1 | Yukimasa Funaoka <yukimasafunaoka@gmail.com> */
-import {
-  Scene,
-  PerspectiveCamera,
-  WebGLRenderer,
-  Mesh,
-  MeshBasicMaterial,
-  HemisphereLight,
-  Group,
-  BoxGeometry,
-  PlaneGeometry,
-  Geometry,
-  MeshLambertMaterial
-} from "three";
+import { BoxGeometry } from "three/src/geometries/BoxGeometry";
+import { Geometry } from "three/src/core/Geometry";
+import { Group } from "three/src/objects/Group";
+import { HemisphereLight } from "three/src/lights/HemisphereLight";
+import { Mesh } from "three/src/objects/Mesh";
+import { MeshBasicMaterial } from "three/src/materials/MeshBasicMaterial";
+import { MeshLambertMaterial } from "three/src/materials/MeshLambertMaterial";
+import { PerspectiveCamera } from "three/src/cameras/PerspectiveCamera";
+import { PlaneGeometry } from "three/src/geometries/PlaneGeometry";
+import { Scene } from "three/src/scenes/Scene";
+import { WebGLRenderer } from "three/src/renderers/WebGLRenderer";
 import hsl2rgb from "./hsl2rgb";
 import { easeOutBack, easeOutQuad } from "./easing";
 
