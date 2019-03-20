@@ -7,8 +7,8 @@
   "license": "MIT",
   "scripts": {
     "start": "npx webpack-dev-server",
-    "build": "npx webpack",
-    "deploy": "npm run build && npx gh-pages -d dist -b master -a"
+    "build": "NODE_ENV=production npx webpack --mode=production",
+    "deploy": "npm run build && npx gh-pages -d dist -b master -a -m \"Deploy\""
   },
   "browserslist": [
     ">1% in JP",
