@@ -4,6 +4,7 @@ const HtmlBeautifyPlugin = require("html-beautify-webpack-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const ScriptExtHtmlWebpackPlugin = require("script-ext-html-webpack-plugin");
 const WebpackBar = require("webpackbar");
+const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = {
   entry: "./src/js/app.js",
@@ -52,6 +53,26 @@ module.exports = {
     filename: "js/app.js"
   },
   optimization: {
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: {
+          mangle: {
+            properties: {
+              reserved: [
+                "draw",
+                "modelViewMatrix",
+                "projectionMatrix",
+                "normal",
+                "normalMatrix",
+                "google",
+                "families",
+                "text"
+              ]
+            }
+          }
+        }
+      })
+    ],
     splitChunks: {
       cacheGroups: {
         vendors: false
