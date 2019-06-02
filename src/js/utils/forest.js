@@ -1,17 +1,11 @@
 /*! ContributeForest v0.0.1 | Yukimasa Funaoka <yukimasafunaoka@gmail.com> */
-import { BoxGeometry } from "three/src/geometries/BoxGeometry";
-import { Geometry } from "three/src/core/Geometry";
-import { Group } from "three/src/objects/Group";
-import { HemisphereLight } from "three/src/lights/HemisphereLight";
-import { Mesh } from "three/src/objects/Mesh";
-import { MeshBasicMaterial } from "three/src/materials/MeshBasicMaterial";
-import { MeshLambertMaterial } from "three/src/materials/MeshLambertMaterial";
-import { PerspectiveCamera } from "three/src/cameras/PerspectiveCamera";
-import { PlaneGeometry } from "three/src/geometries/PlaneGeometry";
-import { Scene } from "three/src/scenes/Scene";
-import { WebGLRenderer } from "three/src/renderers/WebGLRenderer";
+
 import hsl2rgb from "./hsl2rgb";
 import { easeOutBack, easeOutQuad } from "./easing";
+import * as SolidShader from "./ogl-helper/SolidShader";
+import * as LightShader from "./ogl-helper/LightShader";
+import { Renderer, Camera, Transform, Program, Mesh, Vec3 } from "ogl/src/Core";
+import { Plane, Sphere, Cube } from "ogl/src/Extras";
 
 class Forest {
   constructor(options) {
@@ -34,98 +28,110 @@ class Forest {
     this.adjustSize = this.adjustSize.bind(this);
     this.barRepInterval = this.barSize + this.barMargin;
     this.frame = 0;
-    this.maxContributes = this.data
-      .flat(1)
-      .map(c => c.count - 0)
-      .reduce((a, c) => Math.max(a, c));
+    this.maxContributes = 0;
+    for (let i = 0; i < this.data.length; i++) {
+      for (let j = 0; j < this.data[i].length; j++) {
+        const n = this.data[i][j].count - 0;
+        if (this.maxContributes < n) this.maxContributes = n;
+      }
+    }
     this.initRenderer();
     this.initScene();
     this.adjustSize();
     window.addEventListener("resize", this.adjustSize);
   }
   adjustSize() {
+    console.log(0);
     this.w = Math.min(window.innerWidth, this.baseWidth);
     this.h = this.w * this.hRate;
-    this.renderer.setPixelRatio(window.devicePixelRatio);
+    this.renderer.dpr = Math.max(window.devicePixelRatio, 2);
     this.renderer.setSize(this.w, this.h);
-    this.camera.aspect = this.w / this.h;
-    this.camera.updateProjectionMatrix();
-    this.renderer.render(this.scene, this.camera);
+    this.camera.perspective({
+      aspect: this.gl.canvas.width / this.gl.canvas.height
+    });
+    this.renderer.render({ scene: this.scene, camera: this.camera });
   }
   initRenderer() {
-    //scene
-    this.scene = new Scene();
-    //camera
-    this.camera = new PerspectiveCamera(30, this.w / this.h, 0.1, 1000);
-    this.camera.position.set(0, 0, 100);
     //renderer
-    this.renderer = new WebGLRenderer({ antialias: true });
-    if (window.devicePixelRatio)
-      this.renderer.setPixelRatio(window.devicePixelRatio * 1);
-    this.renderer.setSize(this.w, this.h);
-    this.renderer.setClearColor(0xffffff, 1);
-    const canvas = this.renderer.domElement;
-    //canvas.style.width="100%";
-    //canvas.style.height="auto";
-    this.container.appendChild(canvas);
+    this.renderer = new Renderer({ antialias: true });
+    this.gl = this.renderer.gl;
+    document.getElementById("forest-view").appendChild(this.gl.canvas);
+    this.gl.clearColor(1, 1, 1, 1);
+
+    //scene
+    this.scene = new Transform();
+
+    //camera
+    this.camera = new Camera(this.gl, { fov: 30, far: 1000 });
+    this.camera.position.set(0, 0, 100);
+    this.camera.lookAt([0, 0, 0]);
+    window.camera = this.camera;
   }
   initScene() {
-    // light
-    this.light = new HemisphereLight(0xffffff, 0x000000, 1.2);
-    this.light.position.set(0, 400, 500).normalize();
-    this.scene.add(this.light);
-    //group
-    this.group = new Group();
-    this.group.rotation.x = 0.4;
-    this.group.rotation.y = -0.6;
-    this.scene.add(this.group);
     //grasses
-    const GRASS_GEOMETRY = new BoxGeometry(
-      this.barSize,
-      this.barBaseHeight,
-      this.barSize
-    );
-    const GRASS_BASE_GEOMETRY = new PlaneGeometry(
-      this.barSize,
-      this.barSize,
-      1,
-      1
-    );
-    const GRASS_BASE_MATERIAL = new MeshBasicMaterial({ color: 0xeeeeee });
-    const grassesBaseGeometry = new Geometry();
     const WEEK_LENGTH = this.data.length;
     this.grasses = [];
+
+    const cubeGeometry = new Cube(this.gl, {
+      width: this.barSize,
+      depth: this.barSize,
+      height: this.barBaseHeight
+    });
+    const planeGeometry = new Plane(this.gl, {
+      width: this.barSize,
+      height: this.barSize
+    });
+
+    const grassBaseProgram = new Program(this.gl, {
+      vertex: SolidShader.vertex,
+      fragment: SolidShader.fragment()
+    });
+    const grassProgram = new Program(this.gl, {
+      vertex: LightShader.vertex,
+      fragment: LightShader.fragment,
+      uniforms: {
+        color: { value: null }
+      }
+    });
     this.data.forEach((week, weekIndex) => {
       this.grasses[weekIndex] = [];
       const x = 0 + (weekIndex - WEEK_LENGTH / 2 - 2) * this.barRepInterval;
+
       week.forEach((day, dayIndex) => {
         const z = dayIndex * this.barRepInterval;
         //grass
         let lightDiff =
           0.2 * (this.data[weekIndex][dayIndex].count / this.maxContributes);
-
-        const gm = new MeshLambertMaterial({
-          color: hsl2rgb((360 / WEEK_LENGTH) * weekIndex, 0.7, 0.65 - lightDiff)
+        const color = new Vec3(
+          ...hsl2rgb((360 / WEEK_LENGTH) * weekIndex, 0.7, 0.65 - lightDiff)
+        );
+        const onBeforeGrassRender = function() {
+          grassProgram.uniforms.color.value = color;
+        };
+        const grass = new Mesh(this.gl, {
+          geometry: cubeGeometry,
+          program: grassProgram
         });
-        const grass = new Mesh(GRASS_GEOMETRY, gm);
-        grass.position.set(x, 0, z);
-        grass.scale.setY(0);
-        grass.visible = false;
-        this.group.add(grass);
+        grass.position.set(x, 5.5 * 1.5, z);
+        grass.onBeforeRender = onBeforeGrassRender;
+        grass.setParent(this.scene);
         this.grasses[weekIndex][dayIndex] = grass;
         //grassBase
-        const grassBasePart = new Mesh(
-          GRASS_BASE_GEOMETRY,
-          GRASS_BASE_MATERIAL
-        );
+        const grassBasePart = new Mesh(this.gl, {
+          geometry: planeGeometry,
+          program: grassBaseProgram
+        });
         grassBasePart.position.set(x, 0, z);
+        grassBasePart.setParent(this.scene);
         grassBasePart.rotation.x = -1.5707963267948966;
-        grassesBaseGeometry.mergeMesh(grassBasePart);
       });
     });
-    const grassesBase = new Mesh(grassesBaseGeometry, GRASS_BASE_MATERIAL);
-    this.group.add(grassesBase);
-    this.renderer.render(this.scene, this.camera);
+
+    this.scene.rotation.x = 0.32;
+    this.scene.rotation.y = -0.64;
+    this.scene.rotation.z = -0.22;
+
+    this.renderer.render({ scene: this.scene, camera: this.camera });
   }
   animate() {
     this.frame++;
@@ -147,15 +153,19 @@ class Forest {
           }
         }
         val *= ((data.count - 0) / this.maxContributes) * 3;
-        grass.position.setY((this.barBaseHeight * val) / 2);
-        val && grass.scale.setY(val);
+        grass.position.set(
+          grass.position.x,
+          (this.barBaseHeight * val) / 2,
+          grass.position.z
+        );
+        val && (grass.scale.y = val);
         grass.visible = val ? true : false;
       }
     }
     const progPer = this.frame / duration;
-    this.group.rotation.x = 0.4 + easeOutQuad(progPer) * 0.146;
-    this.group.rotation.y = -0.6 + easeOutQuad(progPer) * 0.219;
-    this.renderer.render(this.scene, this.camera);
+    this.scene.rotation.x = 0.32 + easeOutQuad(progPer) * 0.18;
+    this.scene.rotation.y = -0.64 + easeOutQuad(progPer) * 0.2;
+    this.renderer.render({ scene: this.scene, camera: this.camera });
   }
 }
 export default Forest;
