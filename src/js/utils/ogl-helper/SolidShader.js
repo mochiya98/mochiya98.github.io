@@ -14,13 +14,13 @@ export const vertex_raw = `
  `;
 
 export const fragment = () =>
-  `precision highp float;precision highp int;void main(){gl_FragColor.xyz=vec3(0.9333,0.9333,0.9333);gl_FragColor.w=1.0;}`;
+  `precision highp float;precision highp int;void main(){gl_FragColor.xyz=vec3(0.93333);gl_FragColor.w=1.0;}`;
 export const fragment_raw = () => `
  precision highp float;
  precision highp int;
  
  void main() {
-	  gl_FragColor.rgb = vec3(0.9333, 0.9333, 0.9333);
+	  gl_FragColor.rgb = vec3(0.93333);
 	  gl_FragColor.a = 1.0;
  }
  `;
