@@ -6,12 +6,16 @@ const animateContributionsCounter = function(data) {
   const contributions = data.flat(1).reduce((a, { count }) => a + count, 0);
   const duration = data.length + 13;
   const numberFormat = new Intl.NumberFormat();
+  let initialDate = Date.now();
   let frame = 0;
   function animate() {
-    if (++frame < duration) requestAnimationFrame(animate);
-    if (frame % 2) return;
+    const realFrame = (Date.now() - initialDate) / 16.6666;
+    if (realFrame < duration) {
+      requestAnimationFrame(animate);
+      if (++frame % 2) return;
+    }
     elCount.textContent = numberFormat.format(
-      (contributions * easeOutQuad(frame / duration)) | 0
+      (contributions * easeOutQuad(realFrame / duration)) | 0
     );
   }
   animate();

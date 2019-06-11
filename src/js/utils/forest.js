@@ -4,8 +4,9 @@ import hsl2rgb from "./hsl2rgb";
 import { easeOutBack, easeOutQuad } from "./easing";
 import * as SolidShader from "./ogl-helper/SolidShader";
 import * as LightShader from "./ogl-helper/LightShader";
+import GrassBasePlanes from "./ogl-helper/GrassBasePlanes";
 import { Renderer, Camera, Transform, Program, Mesh, Vec3 } from "ogl/src/Core";
-import { Plane, Sphere, Cube } from "ogl/src/Extras";
+import { Cube } from "ogl/src/Extras";
 
 class Forest {
   constructor(options) {
@@ -27,7 +28,7 @@ class Forest {
     this.animate = this.animate.bind(this);
     this.adjustSize = this.adjustSize.bind(this);
     this.barRepInterval = this.barSize + this.barMargin;
-    this.frame = 0;
+    this.initialDate = Date.now();
     this.maxContributes = 0;
     for (let i = 0; i < this.data.length; i++) {
       for (let j = 0; j < this.data[i].length; j++) {
@@ -41,7 +42,6 @@ class Forest {
     window.addEventListener("resize", this.adjustSize);
   }
   adjustSize() {
-    console.log(0);
     this.w = Math.min(window.innerWidth, this.baseWidth);
     this.h = this.w * this.hRate;
     this.renderer.dpr = Math.max(window.devicePixelRatio, 2);
@@ -77,10 +77,6 @@ class Forest {
       depth: this.barSize,
       height: this.barBaseHeight
     });
-    const planeGeometry = new Plane(this.gl, {
-      width: this.barSize,
-      height: this.barSize
-    });
 
     const grassBaseProgram = new Program(this.gl, {
       vertex: SolidShader.vertex,
@@ -93,6 +89,9 @@ class Forest {
         color: { value: null }
       }
     });
+
+    const grassBasePositions = [];
+
     this.data.forEach((week, weekIndex) => {
       this.grasses[weekIndex] = [];
       const x = 0 + (weekIndex - WEEK_LENGTH / 2 - 2) * this.barRepInterval;
@@ -117,15 +116,19 @@ class Forest {
         grass.setParent(this.scene);
         this.grasses[weekIndex][dayIndex] = grass;
         //grassBase
-        const grassBasePart = new Mesh(this.gl, {
-          geometry: planeGeometry,
-          program: grassBaseProgram
-        });
-        grassBasePart.position.set(x, 0, z);
-        grassBasePart.setParent(this.scene);
-        grassBasePart.rotation.x = -1.5707963267948966;
+        grassBasePositions.push([x, z]);
       });
     });
+    const grassBaseGeometry = new GrassBasePlanes(this.gl, {
+      width: this.barSize,
+      height: this.barSize,
+      positions: grassBasePositions
+    });
+    const grassBase = new Mesh(this.gl, {
+      geometry: grassBaseGeometry,
+      program: grassBaseProgram
+    });
+    grassBase.setParent(this.scene);
 
     this.scene.rotation.x = 0.32;
     this.scene.rotation.y = -0.64;
@@ -134,9 +137,9 @@ class Forest {
     this.renderer.render({ scene: this.scene, camera: this.camera });
   }
   animate() {
-    this.frame++;
+    const frame = (Date.now() - this.initialDate) / 16.6666;
     const duration = this.grasses.length + 20;
-    if (this.frame < duration) requestAnimationFrame(this.animate);
+    if (frame < duration) requestAnimationFrame(this.animate);
     for (let weekIndex = 0; weekIndex < this.grasses.length; weekIndex++) {
       for (
         let dayIndex = 0;
@@ -146,9 +149,9 @@ class Forest {
         const grass = this.grasses[weekIndex][dayIndex];
         const data = this.data[weekIndex][dayIndex];
         let val = 0;
-        if (this.frame >= weekIndex) {
-          val = easeOutBack((this.frame - weekIndex) / 20);
-          if (this.frame - weekIndex >= 20) {
+        if (frame >= weekIndex) {
+          val = easeOutBack((frame - weekIndex) / 20);
+          if (frame - weekIndex >= 20) {
             val = 1;
           }
         }
@@ -162,7 +165,7 @@ class Forest {
         grass.visible = val ? true : false;
       }
     }
-    const progPer = this.frame / duration;
+    const progPer = frame / duration;
     this.scene.rotation.x = 0.32 + easeOutQuad(progPer) * 0.18;
     this.scene.rotation.y = -0.64 + easeOutQuad(progPer) * 0.2;
     this.renderer.render({ scene: this.scene, camera: this.camera });
