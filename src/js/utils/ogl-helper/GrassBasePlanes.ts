@@ -2,14 +2,24 @@ import { Geometry } from "ogl/src/Core";
 
 export class GrassBasePlanes extends Geometry {
   constructor(
-    gl,
-    { width = 1, height = 1, attributes = {}, positions = null } = {}
+    gl: WebGLRenderingContext,
+    {
+      width = 1,
+      height = 1,
+      attributes = {},
+      positions = null
+    }: {
+      width?: number;
+      height?: number;
+      attributes?: unknown;
+      positions: ([number, number] | [number, number, number])[] | null;
+    } = {} as any
   ) {
     if (!positions) throw new Error("need positions");
 
     // Determine length of arrays
-    const num = 2 * 2 * positions.length;
-    const numIndices = positions.length * 6;
+    const num = 2 * 2 * positions!.length;
+    const numIndices = positions!.length * 6;
 
     // Generate empty arrays once
     const position = new Float32Array(num * 3);
@@ -49,12 +59,12 @@ export class GrassBasePlanes extends Geometry {
     super(gl, attributes);
   }
   static buildPlane(
-    position,
-    normal,
-    uv,
-    index,
-    width,
-    height,
+    position: Float32Array,
+    normal: Float32Array,
+    uv: Float32Array,
+    index: Uint32Array | Uint16Array,
+    width: number,
+    height: number,
     u = 0,
     v = 1,
     w = 2,

@@ -1,4 +1,4 @@
-/*! ContributeForest v0.0.1 | Yukimasa Funaoka <yukimasafunaoka@gmail.com> */
+/*! ContributeForest v0.0.3 | Yukimasa Funaoka <yukimasafunaoka@gmail.com> */
 
 import hsl2rgb from "./hsl2rgb";
 import { easeOutBack, easeOutQuad } from "./easing";
@@ -7,21 +7,50 @@ import * as LightShader from "./ogl-helper/LightShader";
 import GrassBasePlanes from "./ogl-helper/GrassBasePlanes";
 import { Renderer, Camera, Transform, Program, Mesh, Vec3 } from "ogl/src/Core";
 import { Cube } from "ogl/src/Extras";
+import { calcContributions } from "./math";
+import { YearContributionsData } from "js/models/contributions";
 
 class Forest {
-  constructor(options) {
-    Object.assign(
-      this,
-      {
-        container: document.body,
-        baseWidth: 800,
-        baseHeight: 350,
-        barBaseHeight: 5.5,
-        barSize: 1.8,
-        barMargin: 0.25
-      },
-      options
-    );
+  w: number;
+  h: number;
+  baseWidth: number;
+  baseHeight: number;
+  barBaseHeight: number;
+  barSize: number;
+  barMargin: number;
+  hRate: number;
+  barRepInterval: number;
+  initialDate: number;
+  maxContributes: number;
+  data: any;
+  renderer: Renderer;
+  gl: WebGLRenderingContext;
+  scene: Transform;
+  camera: Camera;
+  grasses: any[][];
+  //constructor options
+  container: HTMLElement;
+
+  constructor(
+    options?: Partial<{
+      container: HTMLElement;
+      data: YearContributionsData;
+      baseWidth: number;
+      baseHeight: number;
+      barBaseHeight: number;
+      barSize: number;
+      barMargin: number;
+    }>
+  ) {
+    this.container = document.body;
+    this.data = [];
+    this.baseWidth = 800;
+    this.baseHeight = 350;
+    this.barBaseHeight = 5.5;
+    this.barSize = 1.8;
+    this.barMargin = 0.25;
+    Object.assign(this, options);
+
     this.w = this.baseWidth;
     this.h = this.baseHeight;
     this.hRate = this.baseHeight / this.baseWidth;
@@ -29,14 +58,21 @@ class Forest {
     this.adjustSize = this.adjustSize.bind(this);
     this.barRepInterval = this.barSize + this.barMargin;
     this.initialDate = Date.now();
-    this.maxContributes = 0;
-    for (let i = 0; i < this.data.length; i++) {
-      for (let j = 0; j < this.data[i].length; j++) {
-        const n = this.data[i][j].count - 0;
-        if (this.maxContributes < n) this.maxContributes = n;
-      }
-    }
-    this.initRenderer();
+    this.maxContributes = calcContributions(this.data).maxContributes;
+    //renderer
+    this.renderer = new Renderer({ antialias: true });
+    this.gl = this.renderer.gl;
+    document.getElementById("forest-view")!.appendChild(this.gl.canvas);
+    this.gl.clearColor(1, 1, 1, 1);
+
+    //scene
+    this.grasses = [];
+    this.scene = new Transform();
+
+    //camera
+    this.camera = new Camera(this.gl, { fov: 30, far: 1000 });
+    this.camera.position.set(0, 0, 100);
+    this.camera.lookAt([0, 0, 0]);
     this.initScene();
     this.adjustSize();
     window.addEventListener("resize", this.adjustSize);
@@ -51,26 +87,9 @@ class Forest {
     });
     this.renderer.render({ scene: this.scene, camera: this.camera });
   }
-  initRenderer() {
-    //renderer
-    this.renderer = new Renderer({ antialias: true });
-    this.gl = this.renderer.gl;
-    document.getElementById("forest-view").appendChild(this.gl.canvas);
-    this.gl.clearColor(1, 1, 1, 1);
-
-    //scene
-    this.scene = new Transform();
-
-    //camera
-    this.camera = new Camera(this.gl, { fov: 30, far: 1000 });
-    this.camera.position.set(0, 0, 100);
-    this.camera.lookAt([0, 0, 0]);
-    window.camera = this.camera;
-  }
   initScene() {
     //grasses
     const WEEK_LENGTH = this.data.length;
-    this.grasses = [];
 
     const cubeGeometry = new Cube(this.gl, {
       width: this.barSize,
@@ -90,17 +109,17 @@ class Forest {
       }
     });
 
-    const grassBasePositions = [];
+    const grassBasePositions: [number, number][] = [];
 
-    this.data.forEach((week, weekIndex) => {
+    for (let weekIndex = 0; weekIndex < this.data.length; weekIndex++) {
+      const week = this.data[weekIndex];
       this.grasses[weekIndex] = [];
       const x = 0 + (weekIndex - WEEK_LENGTH / 2 - 2) * this.barRepInterval;
 
-      week.forEach((day, dayIndex) => {
+      for (let dayIndex = 0; dayIndex < week.length; dayIndex++) {
         const z = dayIndex * this.barRepInterval;
         //grass
-        let lightDiff =
-          0.2 * (this.data[weekIndex][dayIndex].count / this.maxContributes);
+        let lightDiff = 0.2 * (week[dayIndex].count / this.maxContributes);
         const color = new Vec3(
           ...hsl2rgb((360 / WEEK_LENGTH) * weekIndex, 0.7, 0.65 - lightDiff)
         );
@@ -117,8 +136,8 @@ class Forest {
         this.grasses[weekIndex][dayIndex] = grass;
         //grassBase
         grassBasePositions.push([x, z]);
-      });
-    });
+      }
+    }
     const grassBaseGeometry = new GrassBasePlanes(this.gl, {
       width: this.barSize,
       height: this.barSize,
