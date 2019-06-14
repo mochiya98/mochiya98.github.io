@@ -1,7 +1,13 @@
 module.exports = {
-  presets: ["@babel/preset-env"],
-  plugins: [
-    "@babel/plugin-syntax-dynamic-import",
-    ["@babel/plugin-transform-destructuring", { loose: true }]
-  ]
+  presets: [
+    [
+      "@babel/preset-env",
+      {
+        loose: true,
+        targets: ["> 1% in JP", "not IE 11", "Safari >= 10"]
+      }
+    ],
+    "@babel/preset-typescript"
+  ],
+  plugins: ["@babel/plugin-syntax-dynamic-import"]
 };
