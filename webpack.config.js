@@ -7,13 +7,17 @@ const WebpackBar = require("webpackbar");
 const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = {
-  entry: "./src/js/app.js",
+  entry: "./src/js/app.ts",
   module: {
     rules: [
       {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: "babel-loader"
+        test: /\.[jt]sx?$/,
+        use: [
+          {
+            loader: "babel-loader",
+            options: { babelrcRoots: true }
+          }
+        ]
       },
       {
         test: /\.html$/,
@@ -44,7 +48,7 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: ["*", ".js", ".jsx"]
+    extensions: ["*", ".js", ".jsx", ".ts", ".tsx"]
   },
   output: {
     path: __dirname + "/dist",
@@ -79,6 +83,7 @@ module.exports = {
       }
     }
   },
+  devtool: "inline-source-map",
   devServer: {
     contentBase: "./dist",
     publicPath: "/",
