@@ -91,7 +91,7 @@ class Forest {
     //grasses
     const WEEK_LENGTH = this.data.length;
 
-    const cubeGeometry = new Cube(this.gl, {
+    const cubeGeometry = new Box(this.gl, {
       width: this.barSize,
       depth: this.barSize,
       height: this.barBaseHeight
