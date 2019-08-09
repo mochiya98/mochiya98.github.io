@@ -49,7 +49,7 @@ class Forest {
     this.barBaseHeight = 5.5;
     this.barSize = 1.8;
     this.barMargin = 0.25;
-    Object.assign(this, options);
+    for(let i in options)this[i]=options[i];
 
     this.w = this.baseWidth;
     this.h = this.baseHeight;

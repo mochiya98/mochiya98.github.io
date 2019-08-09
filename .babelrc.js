@@ -4,7 +4,7 @@ module.exports = {
       "@babel/preset-env",
       {
         loose: true,
-        targets: ["> 1% in JP", "not IE 11", "Safari >= 10"]
+        targets: ["> 1% in JP", "Safari >= 10"],
       }
     ],
     "@babel/preset-typescript"

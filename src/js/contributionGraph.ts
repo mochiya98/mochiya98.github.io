@@ -1,3 +1,5 @@
+import 'oes-vertex-attrib-array-polyfill';
+import 'object-assign-polyfill';
 import { easeOutBack, easeOutQuad } from "./utils/easing";
 import Forest from "./utils/forest";
 import { calcContributions } from "./utils/math";

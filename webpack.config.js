@@ -14,8 +14,7 @@ module.exports = {
         test: /\.[jt]sx?$/,
         use: [
           {
-            loader: "babel-loader",
-            options: { babelrcRoots: true }
+            loader: "babel-loader"
           }
         ]
       },
@@ -68,9 +67,17 @@ module.exports = {
                 "projectionMatrix",
                 "normal",
                 "normalMatrix",
+                //WebFont Loader
                 "google",
                 "families",
-                "text"
+                "text",
+                //oes-vertex-attrib-array-polyfill
+                "VERTEX_ARRAY_BINDING_OES",
+                "createVertexArrayOES",
+                "deleteVertexArrayOES",
+                "isVertexArrayOES",
+                "bindVertexArrayOES",
+                "__OESVertexArrayObject",
               ]
             }
           }

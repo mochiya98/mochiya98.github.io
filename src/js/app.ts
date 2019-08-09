@@ -1,3 +1,8 @@
+import fetch from "unfetch"
+import Promise from "promise-mini";
+if(!window.fetch) window.fetch = fetch;
+if(!window.Promise) window.Promise = Promise;
+
 import { waitFontLoading } from "./utils/webfont-loader";
 import "../css/app.css";
 import { YearContributionsData } from "./models/contributions";
