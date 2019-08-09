@@ -59,6 +59,7 @@ module.exports = {
     minimizer: [
       new TerserPlugin({
         terserOptions: {
+          sourceMap: true,
           mangle: {
             properties: {
               reserved: [
