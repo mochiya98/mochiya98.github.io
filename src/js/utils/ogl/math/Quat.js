@@ -1,13 +1,12 @@
 import * as QuatFunc from './functions/QuatFunc.js';
 
-export class Quat extends Array {
+export class Quat {
     constructor(x = 0, y = 0, z = 0, w = 1) {
-        super(x, y, z, w);
+        this.obj=[x, y, z, w];
         this.onChange = () => {};
-        return this;
     }
 
-    get x() {
+    /*get x() {
         return this[0];
     }
 
@@ -41,9 +40,9 @@ export class Quat extends Array {
     set w(v) {
         this[3] = v;
         this.onChange();
-    }
+    }*/
 
-    identity() {
+    /*identity() {
         QuatFunc.identity(this);
         this.onChange();
         return this;
@@ -116,14 +115,14 @@ export class Quat extends Array {
         QuatFunc.fromMat3(this, matrix3);
         this.onChange();
         return this;
-    }
+    }*/
 
     fromEuler(euler) {
-        QuatFunc.fromEuler(this, euler, euler.order);
+        QuatFunc.fromEuler(this.obj, euler.obj, euler.order);
         return this;
     }
 
-    fromAxisAngle(axis, a) {
+    /*fromAxisAngle(axis, a) {
         QuatFunc.setAxisAngle(this, axis, a);
         return this;
     }
@@ -147,5 +146,5 @@ export class Quat extends Array {
 		a[o + 2] = this[2];
 		a[o + 3] = this[3];
 		return a;
-	}
+	}*/
 }

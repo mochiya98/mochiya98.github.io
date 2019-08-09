@@ -1,41 +1,40 @@
 import * as Vec4Func from './functions/Vec4Func.js';
 
-export class Vec4 extends Array {
+export class Vec4 {
     constructor(x = 0, y = x, z = x, w = x) {
-        super(x, y, z, w);
-        return this;
+        this.obj=[x, y, z, w];
     }
 
     get x() {
-        return this[0];
+        return this.obj[0];
     }
 
     set x(v) {
-        this[0] = v;
+        this.obj[0] = v;
     }
 
     get y() {
-        return this[1];
+        return this.obj[1];
     }
 
     set y(v) {
-        this[1] = v;
+        this.obj[1] = v;
     }
 
     get z() {
-        return this[2];
+        return this.obj[2];
     }
 
     set z(v) {
-        this[2] = v;
+        this.obj[2] = v;
     }
 
     get w() {
-        return this[3];
+        return this.obj[3];
     }
 
     set w(v) {
-        this[3] = v;
+        this.obj[3] = v;
     }
 
     set(x, y, z, w) {

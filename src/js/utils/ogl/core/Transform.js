@@ -34,10 +34,10 @@ export class Transform {
         if (notifyChild) child.setParent(this, false);
     }
 
-    removeChild(child, notifyChild = true) {
+    /*removeChild(child, notifyChild = true) {
         if (!!~this.children.indexOf(child)) this.children.splice(this.children.indexOf(child), 1);
         if (notifyChild) child.setParent(null, false);
-    }
+    }*/
 
     updateMatrixWorld(force) {
         if (this.matrixAutoUpdate) this.updateMatrix();
@@ -67,12 +67,12 @@ export class Transform {
         }
     }
 
-    decompose() {
+    /*decompose() {
         this.matrix.getTranslation(this.position);
         this.matrix.getRotation(this.quaternion);
         this.matrix.getScaling(this.scale);
         this.rotation.fromQuaternion(this.quaternion);
-    }
+    }*/
 
     lookAt(target, invert = false) {
         if (invert) this.matrix.lookAt(this.position, target, this.up);

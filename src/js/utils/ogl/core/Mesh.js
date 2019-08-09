@@ -62,7 +62,7 @@ export class Mesh extends Transform {
         }
 
         // determine if faces need to be flipped - when mesh scaled negatively
-        let flipFaces = this.program.cullFace && this.worldMatrix.determinant() < 0;
+        let flipFaces = this.program.cullFace && this.worldMatrix.determinant().obj < 0;
 
         this.program.use({flipFaces});
         this.geometry.draw({mode: this.mode, program: this.program});

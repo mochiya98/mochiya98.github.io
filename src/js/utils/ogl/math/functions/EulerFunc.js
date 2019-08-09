@@ -20,7 +20,7 @@ export function fromRotationMatrix(out, m, order = 'YXZ') {
             out[1] = Math.atan2(-m[2], m[0]);
             out[2] = 0;
         }
-    } else if (order === 'ZXY') {
+    }/* else if (order === 'ZXY') {
         out[0] = Math.asin(Math.min(Math.max(m[6], -1), 1));
         if (Math.abs(m[6]) < 0.99999) {
             out[1] = Math.atan2(-m[2], m[10]);
@@ -56,7 +56,7 @@ export function fromRotationMatrix(out, m, order = 'YXZ') {
             out[0] = Math.atan2(-m[9], m[10]);
             out[1] = 0;
         }
-    }
+    }*/
 
     return out;
 }

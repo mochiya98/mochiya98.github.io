@@ -1,25 +1,24 @@
 import * as Vec2Func from './functions/Vec2Func.js';
 
-export class Vec2 extends Array {
+export class Vec2 {
     constructor(x = 0, y = x) {
-        super(x, y);
-        return this;
+        this.obj=[x, y];
     }
 
     get x() {
-        return this[0];
+        return this.obj[0];
     }
 
     set x(v) {
-        this[0] = v;
+        this.obj[0] = v;
     }
 
     get y() {
-        return this[1];
+        return this.obj[1];
     }
 
     set y(v) {
-        this[1] = v;
+        this.obj[1] = v;
     }
 
     set(x, y = x) {
@@ -114,7 +113,7 @@ export class Vec2 extends Array {
     }
 
     applyMatrix4(mat4) {
-        Vec2Func.transformMat4(this, this, mat4);
+        Vec2Func.transformMat4(this, this, mat4.obj);
         return this;
     }
 

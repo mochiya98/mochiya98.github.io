@@ -45,7 +45,7 @@ export class Camera extends Transform {
         return this;
     }
 
-    orthographic({
+    /*orthographic({
         near = this.near,
         far = this.far,
         left = -1,
@@ -56,7 +56,7 @@ export class Camera extends Transform {
         this.projectionMatrix.fromOrthogonal({left, right, bottom, top, near, far});
         this.type = 'orthographic';
         return this;
-    }
+    }*/
 
     updateMatrixWorld() {
         super.updateMatrixWorld();
@@ -73,25 +73,25 @@ export class Camera extends Transform {
     }
 
     // Project 3D coordinate to 2D point
-    project(v) {
+    /*project(v) {
         v.applyMatrix4(this.viewMatrix);
         v.applyMatrix4(this.projectionMatrix);
         return this;
-    }
+    }*/
 
     // Unproject 2D point to 3D coordinate
-    unproject(v) {
+    /*unproject(v) {
         v.applyMatrix4(tempMat4.inverse(this.projectionMatrix));
         v.applyMatrix4(this.worldMatrix);
         return this;
-    }
+    }*/
 
     updateFrustum() {
         if (!this.frustum) {
             this.frustum = [new Vec3(), new Vec3(), new Vec3(), new Vec3(), new Vec3(), new Vec3()];
         }
 
-        const m = this.projectionViewMatrix;
+        const m = this.projectionViewMatrix.obj;
         this.frustum[0].set(m[3] - m[0], m[7] - m[4], m[11] - m[8]).constant = m[15] - m[12]; // -x
         this.frustum[1].set(m[3] + m[0], m[7] + m[4], m[11] + m[8]).constant = m[15] + m[12]; // +x
         this.frustum[2].set(m[3] + m[1], m[7] + m[5], m[11] + m[9]).constant = m[15] + m[13]; // +y

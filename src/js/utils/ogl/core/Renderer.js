@@ -106,10 +106,8 @@ export class Renderer {
         this.gl.canvas.width = width * this.dpr;
         this.gl.canvas.height = height * this.dpr;
 
-        Object.assign(this.gl.canvas.style, {
-            width: width + 'px',
-            height: height + 'px',
-        });
+        this.gl.canvas.style.width = width + 'px';
+        this.gl.canvas.style.height = height + 'px';
     }
 
     setViewport(width, height) {
@@ -131,7 +129,7 @@ export class Renderer {
         this.state[id] = false;
     }
 
-    setBlendFunc(src, dst, srcAlpha, dstAlpha) {
+    /*setBlendFunc(src, dst, srcAlpha, dstAlpha) {
         if (this.state.blendFunc.src === src &&
             this.state.blendFunc.dst === dst &&
             this.state.blendFunc.srcAlpha === srcAlpha &&
@@ -151,7 +149,7 @@ export class Renderer {
         this.state.blendEquation.modeAlpha = modeAlpha;
         if (modeAlpha !== undefined) this.gl.blendEquationSeparate(modeRGB, modeAlpha);
         else this.gl.blendEquation(modeRGB);
-    }
+    }*/
 
     setCullFace(value) {
         if (this.state.cullFace === value) return;
@@ -177,11 +175,11 @@ export class Renderer {
         this.gl.depthFunc(value);
     }
 
-    activeTexture(value) {
+    /*activeTexture(value) {
         if (this.state.activeTextureUnit === value) return;
         this.state.activeTextureUnit = value;
         this.gl.activeTexture(this.gl.TEXTURE0 + value);
-    }
+    }*/
 
     bindFramebuffer({target = this.gl.FRAMEBUFFER, buffer = null} = {}) {
         if (this.state.framebuffer === buffer) return;
@@ -218,7 +216,7 @@ export class Renderer {
         }
     }
 
-    sortTransparent(a, b) {
+    /*sortTransparent(a, b) {
         if (a.renderOrder !== b.renderOrder) {
             return a.renderOrder - b.renderOrder;
         } if (a.zDepth !== b.zDepth) {
@@ -236,7 +234,7 @@ export class Renderer {
         } else {
             return b.id - a.id;
         }
-    }
+    }*/
 
     getRenderList({scene, camera, frustumCull, sort}) {
         let renderList = [];

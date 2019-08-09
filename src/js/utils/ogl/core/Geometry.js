@@ -89,7 +89,7 @@ export class Geometry {
         attr.needsUpdate = false;
     }
 
-    setIndex(value) {
+    /*setIndex(value) {
         this.addAttribute('index', value);
     }
 
@@ -100,7 +100,7 @@ export class Geometry {
 
     setInstancedCount(value) {
         this.instancedCount = value;
-    }
+    }*/
 
     createVAO(program) {
         this.VAOs[program.attributeOrder] = this.gl.renderer.createVertexArray();

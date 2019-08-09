@@ -1,4 +1,4 @@
-import * as vec3 from './Vec3Func.js';
+//import * as vec3 from './Vec3Func.js';
 import * as vec4 from './Vec4Func.js';
 
 /**
@@ -482,7 +482,7 @@ export const equals = vec4.equals;
  * @param {vec3} b the destination vector
  * @returns {quat} out
  */
-export const rotationTo = (function () {
+/*export const rotationTo = (function () {
     const tmpvec3 = [0, 0, 0];
     const xUnitVec3 = [1, 0, 0];
     const yUnitVec3 = [0, 1, 0];
@@ -511,7 +511,7 @@ export const rotationTo = (function () {
             return normalize(out, out);
         }
     };
-})();
+})();*/
 
 /**
  * Performs a spherical linear interpolation with two control points
@@ -524,7 +524,7 @@ export const rotationTo = (function () {
  * @param {Number} t interpolation amount
  * @returns {quat} out
  */
-export const sqlerp = (function () {
+/*export const sqlerp = (function () {
     let temp1 = [0, 0, 0, 1];
     let temp2 = [0, 0, 0, 1];
 
@@ -535,7 +535,7 @@ export const sqlerp = (function () {
 
         return out;
     };
-}());
+}());*/
 
 /**
  * Sets the specified quaternion with values corresponding to the given

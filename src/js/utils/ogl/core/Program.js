@@ -107,7 +107,7 @@ export class Program {
         this.attributeOrder = locations.join('');
     }
 
-    setBlendFunc(src, dst, srcAlpha, dstAlpha) {
+    /*setBlendFunc(src, dst, srcAlpha, dstAlpha) {
         this.blendFunc.src = src;
         this.blendFunc.dst = dst;
         this.blendFunc.srcAlpha = srcAlpha;
@@ -118,7 +118,7 @@ export class Program {
     setBlendEquation(modeRGB, modeAlpha) {
         this.blendEquation.modeRGB = modeRGB;
         this.blendEquation.modeAlpha = modeAlpha;
-    }
+    }*/
 
     applyState() {
         if (this.depthTest) this.gl.renderer.enable(this.gl.DEPTH_TEST);
@@ -184,7 +184,7 @@ export class Program {
             }
 
             // For texture arrays, set uniform as an array of texture units instead of just one
-            if (uniform.value.length && uniform.value[0].texture) {
+            if (uniform.value.obj.length && uniform.value.obj[0].texture) {
                 const textureUnits = [];
                 uniform.value.forEach(value => {
                     textureUnit = textureUnit + 1;
@@ -194,7 +194,8 @@ export class Program {
                 
                 return setUniform(this.gl, activeUniform.type, location, textureUnits);
             }
-
+            
+            //m98: every use .obj
             setUniform(this.gl, activeUniform.type, location, uniform.value);
         });
 
@@ -208,20 +209,21 @@ export class Program {
 }
 
 function setUniform(gl, type, location, value) {
-    value = value.length ? flatten(value) : value;
+    let valueArray= value.obj.length ? flatten(value.obj) : value.obj;
     const setValue = gl.renderer.state.uniformLocations.get(location);
 
     // Avoid redundant uniform commands
-    if (value.length) {
+    if (valueArray.length) {
         if (setValue === undefined) {
 
             // clone array to store as cache
-            gl.renderer.state.uniformLocations.set(location, value.slice(0));
+            gl.renderer.state.uniformLocations.set(location, valueArray.slice(0));
         } else {
-            if (arraysEqual(setValue, value)) return;
+            if (arraysEqual(setValue, valueArray)) return;
 
             // Update cached array values
-            setValue.set(value);
+            //setValue.set(valueArray);
+            for(let i=valueArray.length;i--;)setValue[i]=valueArray[i];
             gl.renderer.state.uniformLocations.set(location, setValue);
         }
     } else {
@@ -230,23 +232,23 @@ function setUniform(gl, type, location, value) {
     }
 
     switch (type) {
-        case 5126  : return value.length ? gl.uniform1fv(location, value) : gl.uniform1f(location, value); // FLOAT
-        case 35664 : return gl.uniform2fv(location, value); // FLOAT_VEC2
-        case 35665 : return gl.uniform3fv(location, value); // FLOAT_VEC3
-        case 35666 : return gl.uniform4fv(location, value); // FLOAT_VEC4
+        case 5126  : return valueArray.length ? gl.uniform1fv(location, valueArray) : gl.uniform1f(location, valueArray); // FLOAT
+        case 35664 : return gl.uniform2fv(location, valueArray); // FLOAT_VEC2
+        case 35665 : return gl.uniform3fv(location, valueArray); // FLOAT_VEC3
+        case 35666 : return gl.uniform4fv(location, valueArray); // FLOAT_VEC4
         case 35670 : // BOOL
         case 5124  : // INT
         case 35678 : // SAMPLER_2D
-        case 35680 : return value.length ? gl.uniform1iv(location, value) : gl.uniform1i(location, value); // SAMPLER_CUBE
+        case 35680 : return valueArray.length ? gl.uniform1iv(location, valueArray) : gl.uniform1i(location, valueArray); // SAMPLER_CUBE
         case 35671 : // BOOL_VEC2
-        case 35667 : return gl.uniform2iv(location, value); // INT_VEC2
+        case 35667 : return gl.uniform2iv(location, valueArray); // INT_VEC2
         case 35672 : // BOOL_VEC3
-        case 35668 : return gl.uniform3iv(location, value); // INT_VEC3
+        case 35668 : return gl.uniform3iv(location, valueArray); // INT_VEC3
         case 35673 : // BOOL_VEC4
-        case 35669 : return gl.uniform4iv(location, value); // INT_VEC4
-        case 35674 : return gl.uniformMatrix2fv(location, false, value); // FLOAT_MAT2
-        case 35675 : return gl.uniformMatrix3fv(location, false, value); // FLOAT_MAT3
-        case 35676 : return gl.uniformMatrix4fv(location, false, value); // FLOAT_MAT4
+        case 35669 : return gl.uniform4iv(location, valueArray); // INT_VEC4
+        case 35674 : return gl.uniformMatrix2fv(location, false, valueArray); // FLOAT_MAT2
+        case 35675 : return gl.uniformMatrix3fv(location, false, valueArray); // FLOAT_MAT3
+        case 35676 : return gl.uniformMatrix4fv(location, false, valueArray); // FLOAT_MAT4
     }
 }
 

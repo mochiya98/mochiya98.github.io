@@ -3,54 +3,53 @@ import {Mat4} from './Mat4.js';
 
 const tmpMat4 = new Mat4();
 
-export class Euler extends Array {
+export class Euler {
     constructor(x = 0, y = x, z = x, order = 'YXZ') {
-        super(x, y, z);
+        this.obj=[x, y, z];
         this.order = order;
         this.onChange = () => {};
-        return this;
     }
 
     get x() {
-        return this[0];
+        return this.obj[0];
     }
 
     set x(v) {
-        this[0] = v;
+        this.obj[0] = v;
         this.onChange();
     }
 
     get y() {
-        return this[1];
+        return this.obj[1];
     }
 
     set y(v) {
-        this[1] = v;
+        this.obj[1] = v;
         this.onChange();
     }
 
     get z() {
-        return this[2];
+        return this.obj[2];
     }
 
     set z(v) {
-        this[2] = v;
+        this.obj[2] = v;
         this.onChange();
     }
 
-    set(x, y = x, z = x) {
+    /*set(x, y = x, z = x) {
         if (x.length) return this.copy(x);
-        this[0] = x;
-        this[1] = y;
-        this[2] = z;
+        this.obj[0] = x;
+        this.obj[1] = y;
+        this.obj[2] = z;
         this.onChange();
         return this;
     }
 
     copy(v) {
-        this[0] = v[0];
-        this[1] = v[1];
-        this[2] = v[2];
+        this.obj[0] = v[0];
+        this.obj[1] = v[1];
+        this.obj[2] = v[2];
         return this;
     }
 
@@ -58,10 +57,10 @@ export class Euler extends Array {
         this.order = order;
         this.onChange();
         return this;
-    }
+    }*/
 
     fromRotationMatrix(m, order = this.order) {
-        EulerFunc.fromRotationMatrix(this, m, order);
+        EulerFunc.fromRotationMatrix(this.obj, m.obj, order);
         return this;
     }
 
