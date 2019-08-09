@@ -5,8 +5,8 @@ import { easeOutBack, easeOutQuad } from "./easing";
 import * as SolidShader from "./ogl-helper/SolidShader";
 import * as LightShader from "./ogl-helper/LightShader";
 import GrassBasePlanes from "./ogl-helper/GrassBasePlanes";
-import { Renderer, Camera, Transform, Program, Mesh, Vec3 } from "ogl/src/Core";
-import { Cube } from "ogl/src/Extras";
+import { Renderer, Camera, Transform, Program, Mesh, Vec3 } from "./ogl/Core";
+import { Box } from "./ogl/Extras/Box";
 import { calcContributions } from "./math";
 import { YearContributionsData } from "js/models/contributions";
 

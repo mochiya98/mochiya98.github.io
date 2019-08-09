@@ -1,4 +1,4 @@
-import { Geometry } from "ogl/src/Core";
+import { Geometry } from "../ogl/Core";
 
 export class GrassBasePlanes extends Geometry {
   constructor(
