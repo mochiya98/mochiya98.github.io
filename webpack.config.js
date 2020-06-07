@@ -1,6 +1,6 @@
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const HtmlBeautifyPlugin = require("html-beautify-webpack-plugin");
+const HtmlBeautifyPlugin = require("@entr/html-beautify-webpack-plugin").default;
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const ScriptExtHtmlWebpackPlugin = require("script-ext-html-webpack-plugin");
 const WebpackBar = require("webpackbar");
