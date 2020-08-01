@@ -49,7 +49,7 @@ class Forest {
     this.barBaseHeight = 5.5;
     this.barSize = 1.8;
     this.barMargin = 0.25;
-    for(let i in options)this[i]=options[i];
+    for (let i in options) this[i] = options[i];
 
     this.w = this.baseWidth;
     this.h = this.baseHeight;
@@ -83,7 +83,7 @@ class Forest {
     this.renderer.dpr = Math.max(window.devicePixelRatio, 2);
     this.renderer.setSize(this.w, this.h);
     this.camera.perspective({
-      aspect: this.gl.canvas.width / this.gl.canvas.height
+      aspect: this.gl.canvas.width / this.gl.canvas.height,
     });
     this.renderer.render({ scene: this.scene, camera: this.camera });
   }
@@ -94,19 +94,19 @@ class Forest {
     const cubeGeometry = new Box(this.gl, {
       width: this.barSize,
       depth: this.barSize,
-      height: this.barBaseHeight
+      height: this.barBaseHeight,
     });
 
     const grassBaseProgram = new Program(this.gl, {
       vertex: SolidShader.vertex,
-      fragment: SolidShader.fragment()
+      fragment: SolidShader.fragment(),
     });
     const grassProgram = new Program(this.gl, {
       vertex: LightShader.vertex,
       fragment: LightShader.fragment,
       uniforms: {
-        color: { value: null }
-      }
+        color: { value: null },
+      },
     });
 
     const grassBasePositions: [number, number][] = [];
@@ -123,12 +123,12 @@ class Forest {
         const color = new Vec3(
           ...hsl2rgb((360 / WEEK_LENGTH) * weekIndex, 0.7, 0.65 - lightDiff)
         );
-        const onBeforeGrassRender = function() {
+        const onBeforeGrassRender = function () {
           grassProgram.uniforms.color.value = color;
         };
         const grass = new Mesh(this.gl, {
           geometry: cubeGeometry,
-          program: grassProgram
+          program: grassProgram,
         });
         grass.position.set(x, 5.5 * 1.5, z);
         grass.onBeforeRender = onBeforeGrassRender;
@@ -141,11 +141,11 @@ class Forest {
     const grassBaseGeometry = new GrassBasePlanes(this.gl, {
       width: this.barSize,
       height: this.barSize,
-      positions: grassBasePositions
+      positions: grassBasePositions,
     });
     const grassBase = new Mesh(this.gl, {
       geometry: grassBaseGeometry,
-      program: grassBaseProgram
+      program: grassBaseProgram,
     });
     grassBase.setParent(this.scene);
 

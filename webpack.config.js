@@ -1,63 +1,62 @@
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const HtmlBeautifyPlugin = require("@entr/html-beautify-webpack-plugin").default;
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const ScriptExtHtmlWebpackPlugin = require("script-ext-html-webpack-plugin");
 const WebpackBar = require("webpackbar");
 const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = {
-  entry: "./src/js/app.ts",
+  entry: { app: "./src/js/app.ts" },
   module: {
     rules: [
       {
         test: /\.[jt]sx?$/,
         use: [
           {
-            loader: "babel-loader"
-          }
-        ]
+            loader: "babel-loader",
+          },
+        ],
       },
       {
         test: /\.html$/,
-        use: "html-loader"
+        use: "html-loader",
       },
       {
         test: /\.css/,
-        use: ExtractTextPlugin.extract({
-          fallback: "style-loader",
-          use: [
-            {
-              loader: "css-loader",
-              options: {
-                url: false,
-                sourceMap: true
-              }
+        use: [
+          MiniCssExtractPlugin.loader,
+          {
+            loader: "css-loader",
+            options: {
+              url: false,
+              sourceMap: true,
             },
-            {
-              loader: "postcss-loader",
-              options: {
-                sourceMap: true,
-                plugins: [require("autoprefixer")(), require("cssnano")()]
-              }
-            }
-          ]
-        })
-      }
-    ]
+          },
+          {
+            loader: "postcss-loader",
+            options: {
+              sourceMap: true,
+              plugins: [require("autoprefixer")(), require("cssnano")()],
+            },
+          },
+        ],
+      },
+    ],
   },
   resolve: {
-    extensions: ["*", ".js", ".jsx", ".ts", ".tsx"]
+    extensions: ["*", ".js", ".jsx", ".ts", ".tsx"],
   },
   output: {
     path: __dirname + "/dist",
     chunkFilename: "js/chunks/[name].js",
     publicPath: "./",
-    filename: "js/app.js"
+    filename: "js/[name].js",
   },
   optimization: {
     minimizer: [
       new TerserPlugin({
+        parallel: true,
+        cache: true,
         terserOptions: {
           sourceMap: true,
           mangle: {
@@ -79,47 +78,36 @@ module.exports = {
                 "isVertexArrayOES",
                 "bindVertexArrayOES",
                 "__OESVertexArrayObject",
-              ]
-            }
-          }
-        }
-      })
+              ],
+            },
+          },
+        },
+      }),
     ],
     splitChunks: {
       cacheGroups: {
-        vendors: false
-      }
-    }
+        vendors: false,
+      },
+    },
   },
   devtool: "inline-source-map",
   devServer: {
     contentBase: "./dist",
     publicPath: "/",
     inline: true,
-    open: true
+    open: true,
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: "./src/index.html"
+      template: "./src/index.html",
     }),
     new ScriptExtHtmlWebpackPlugin({
-      defaultAttribute: "async"
+      defaultAttribute: "async",
     }),
-    new ExtractTextPlugin({
-      filename: "css/app.css"
+    new MiniCssExtractPlugin({
+      filename: "css/[name].css",
+      chunkFilename: "css/[id].css",
     }),
-    new HtmlBeautifyPlugin({
-      config: {
-        html: {
-          end_with_newline: true,
-          indent_with_tabs: true,
-          indent_inner_html: false,
-          preserve_newlines: true,
-          unformatted: []
-        }
-      },
-      replace: [' type="text/javascript"']
-    }),
-    new WebpackBar()
-  ]
+    new WebpackBar(),
+  ],
 };

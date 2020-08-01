@@ -5,10 +5,10 @@ module.exports = {
       {
         loose: true,
         targets: ["> 1% in JP", "Safari >= 10"],
-        modules: false
-      }
+        modules: false,
+      },
     ],
-    "@babel/preset-typescript"
+    "@babel/preset-typescript",
   ],
-  plugins: ["@babel/plugin-syntax-dynamic-import"]
+  plugins: ["@babel/plugin-syntax-dynamic-import"],
 };

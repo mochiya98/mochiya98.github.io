@@ -23,12 +23,12 @@ declare global {
 window.WebFontConfig = {
   google: {
     families: ["Hind Guntur", "Share Tech Mono"],
-    text: "mochiya98WebEngrI lvJSpt.Tw:@Ld,01234567us#YkFf"
+    text: "mochiya98WebEngrI lvJSpt.Tw:@Ld,01234567us#YkFf",
   },
   active: () => {
     wfcb();
     active = true;
-  }
+  },
 };
 
 let wfcb = () => {},
